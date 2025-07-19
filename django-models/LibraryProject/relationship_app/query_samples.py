@@ -1,4 +1,4 @@
-from relationship_app.models import Author, Book, Library
+from relationship_app.models import Author, Book, Library, Librarian
 
 # Query all books by a specific author
 author_name = "Susanna Gregory"
@@ -17,6 +17,6 @@ for book in books_in_library:
     print(f"- {book.title}")
 
 # Retrieve the librarian for a library
-librarian = library.librarian  # thanks to OneToOneField related_name='librarian'
+librarian = Librarian.objects.get(library=library)
 print(f"\nLibrarian of {library_name}: {librarian.name}")
 

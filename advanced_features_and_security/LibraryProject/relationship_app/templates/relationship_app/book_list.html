@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+  <h2>Book List</h2>
+
+  {% if user.is_authenticated %}
+    {% if user.userprofile.role == 'Admin' or user.userprofile.role == 'Librarian' %}
+      <p><a href="{% url 'add_book' %}">Add New Book</a></p>
+    {% endif %}
+  {% endif %}
+
+ 
+

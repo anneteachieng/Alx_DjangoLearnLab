@@ -55,6 +55,10 @@ from django.contrib.auth.decorators import user_passes_test
 from django.shortcuts import render
 from .models import UserProfile
 
+def book_list(request):
+    books = Book.objects.all()
+    return render(request, 'relationship_app/book_list.html', {'books': books})
+
 def is_admin(user):
     return hasattr(user, 'userprofile') and user.userprofile.role == 'Admin'
 
@@ -78,19 +82,44 @@ def member_view(request):
 
 from django.contrib.auth.decorators import permission_required
 from django.shortcuts import redirect
+from django.shortcuts import render, get_object_or_404
+from .models import Book
+
 
 @permission_required('relationship_app.can_add_book')
 def add_book(request):
-    # logic to add book
+    
     return render(request, 'relationship_app/add_book.html')
 
 @permission_required('relationship_app.can_change_book')
 def edit_book(request, book_id):
-    # logic to edit book
+    
     return render(request, 'relationship_app/edit_book.html')
 
 @permission_required('relationship_app.can_delete_book')
 def delete_book(request, book_id):
-    # logic to delete book
+    
     return redirect('list_books')
+
+@permission_required('relationship_app.can_view', raise_exception=True)
+def book_list(request):
+    books = Book.objects.all()
+    return render(request, 'relationship_app/book_list.html', {'books': books})
+
+@permission_required('relationship_app.can_create', raise_exception=True)
+def create_book(request):
+    
+    pass
+
+@permission_required('relationship_app.can_edit', raise_exception=True)
+def edit_book(request, book_id):
+    book = get_object_or_404(Book, id=book_id)
+    
+    pass
+
+@permission_required('relationship_app.can_delete', raise_exception=True)
+def delete_book(request, book_id):
+    book = get_object_or_404(Book, id=book_id)
+    
+    pass
 

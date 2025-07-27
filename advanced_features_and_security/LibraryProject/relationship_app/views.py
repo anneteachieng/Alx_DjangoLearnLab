@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.views.generic.detail import DetailView
-from .models import Library, Book, Librarian, CustomUser
+from .models import Book
+from .models import Library
 
 # Function-Based View: List all books with their authors
 def list_books(request):
@@ -52,12 +53,7 @@ def user_logout(request):
 
 from django.contrib.auth.decorators import user_passes_test
 from django.shortcuts import render
-from .models import CustomUser
-from .models import Book
-
-def list_books(request):
-    books =Book.objects.all()
-    return render(request, 'list_books.html', {'books':books})
+from .models import UserProfile
 
 def is_admin(user):
     return hasattr(user, 'userprofile') and user.userprofile.role == 'Admin'

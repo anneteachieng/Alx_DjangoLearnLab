@@ -13,7 +13,7 @@ urlpatterns = [
     path('', PostListView.as_view(), name='home'),# homepage shows list of posts
     path('post/<int:pk>/', PostDetailView.as_view(), name='post-detail'),
     path('post/new/', PostCreateView.as_view(), name='post-create'),
-    path('post/<int:pk>/edit/', PostUpdateView.as_view(), name='post-update'),
+    path('post/<int:pk>/update/', PostUpdateView.as_view(), name='post-update'),
     path('post/<int:pk>/delete/', PostDeleteView.as_view(), name='post-delete'),
     # auth URLs
     path('login/', auth_views.LoginView.as_view(template_name='blog/login.html'), name='login'),

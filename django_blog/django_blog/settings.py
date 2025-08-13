@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'blog',
+    'blog.apps.BlogConfig',
 ]
 
 MIDDLEWARE = [
@@ -92,6 +92,19 @@ DATABASES = {
     }
 }
 
+LOGIN_REDIRECT_URL = 'profile'          # after successful login
+LOGOUT_REDIRECT_URL = 'login'           # after logout
+LOGIN_URL = 'login'                     # where @login_required redirects
+
+# (optional) enable Django messages in templates
+from django.contrib.messages import constants as messages
+MESSAGE_TAGS = {
+    messages.DEBUG: 'debug',
+    messages.INFO: 'info',
+    messages.SUCCESS: 'success',
+    messages.WARNING: 'warning',
+    messages.ERROR: 'error',
+}
 
 
 # Password validation

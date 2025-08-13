@@ -1,0 +1,41 @@
+{% extends "blog/base.html" %}
+{% block title %}Your Profile{% endblock %}
+{% block content %}
+  <h2>Profile</h2>
+  <form method="post" enctype="multipart/form-data" novalidate>
+    {% csrf_token %}
+
+    <fieldset>
+      <legend>Account</legend>
+      {{ u_form.non_field_errors }}
+      <div>
+        <label for="{{ u_form.first_name.id_for_label }}">First name</label>
+        {{ u_form.first_name }} {{ u_form.first_name.errors }}
+      </div>
+      <div>
+        <label for="{{ u_form.last_name.id_for_label }}">Last name</label>
+        {{ u_form.last_name }} {{ u_form.last_name.errors }}
+      </div>
+      <div>
+        <label for="{{ u_form.email.id_for_label }}">Email</label>
+        {{ u_form.email }} {{ u_form.email.errors }}
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Profile</legend>
+      {{ p_form.non_field_errors }}
+      <div>
+        <label for="{{ p_form.bio.id_for_label }}">Bio</label>
+        {{ p_form.bio }} {{ p_form.bio.errors }}
+      </div>
+      <div>
+        <label for="{{ p_form.avatar.id_for_label }}">Avatar</label>
+        {{ p_form.avatar }} {{ p_form.avatar.errors }}
+      </div>
+    </fieldset>
+
+    <button type="submit">Save changes</button>
+  </form>
+{% endblock %}
+

@@ -1,5 +1,4 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
@@ -15,7 +14,6 @@ from .forms import (
     CommentForm,
     PostForm,
 )
-
 
 # --- Registration & Profile Views ---
 
@@ -108,7 +106,7 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return self.request.user == post.author
 
 
-# --- Function-Based Views for Comments (Optional) ---
+# --- Function-Based View for Detail + Comments ---
 
 def post_detail(request, pk):
     post = get_object_or_404(Post, pk=pk)
@@ -125,103 +123,4 @@ def post_detail(request, pk):
                 comment.save()
                 return redirect('post_detail', pk=post.pk)
         else:
-            return redirect('login')
-
-    return render(request, 'blog/post_detail.html', {'post': post, 'comments': comments, 'form': form})
-
-
-@login_required
-def comment_edit(request, pk):
-    comment = get_object_or_404(Comment, pk=pk)
-    if request.user != comment.author:
-        return redirect('post_detail', pk=comment.post.pk)
-
-    if request.method == "POST":
-        form = CommentForm(request.POST, instance=comment)
-        if form.is_valid():
-            form.save()
-            return redirect('post_detail', pk=comment.post.pk)
-    else:
-        form = CommentForm(instance=comment)
-
-    return render(request, 'blog/comment_form.html', {'form': form, 'edit': True})
-
-
-@login_required
-def comment_delete(request, pk):
-    comment = get_object_or_404(Comment, pk=pk)
-    post_pk = comment.post.pk
-    if request.user == comment.author:
-        comment.delete()
-    return redirect('post_detail', pk=post_pk)
-
-
-# --- Class-Based Views for Comments (Required by Checker) ---
-
-class CommentCreateView(LoginRequiredMixin, CreateView):
-    model = Comment
-    fields = ['content']
-    template_name = 'blog/comment_form.html'
-
-    def form_valid(self, form):
-        form.instance.author = self.request.user
-        form.instance.post_id = self.kwargs['pk']
-        return super().form_valid(form)
-
-    def get_success_url(self):
-        return reverse_lazy('post-detail', kwargs={'pk': self.kwargs['pk']})
-
-
-class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
-    model = Comment
-    fields = ['content']
-    template_name = 'blog/comment_form.html'
-
-    def test_func(self):
-        comment = self.get_object()
-        return self.request.user == comment.author
-
-    def get_success_url(self):
-        return reverse_lazy('post-detail', kwargs={'pk': self.object.post.pk})
-
-
-class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
-    model = Comment
-    template_name = 'blog/comment_confirm_delete.html'
-
-    def test_func(self):
-        comment = self.get_object()
-        return self.request.user == comment.author
-
-    def get_success_url(self):
-        return reverse_lazy('post-detail', kwargs={'pk': self.object.post.pk})
-
-
-# --- Search View ---
-
-def search_posts(request):
-    query = request.GET.get('q')
-    results = Post.objects.none()
-    if query:
-        results = Post.objects.filter(
-            Q(title__icontains=query) |
-            Q(content__icontains=query) |
-            Q(tags__name__icontains=query)
-        ).distinct()
-    return render(request, 'blog/search_results.html', {'posts': results, 'query': query})
-
-
-# --- Filter by Tag View ---
-
-class PostsByTagListView(ListView):
-    template_name = 'blog/posts_by_tag.html'
-    context_object_name = 'posts'
-
-    def get_queryset(self):
-        return Post.objects.filter(tags__name=self.kwargs['tag_name']).distinct()
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['tag_name'] = self.kwargs['tag_name']
-        return context
 

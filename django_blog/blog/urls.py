@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from .views import search_posts, PostsByTagListView
 from django.contrib.auth import views as auth_views
 from .views import (
     PostListView, PostDetailView,
@@ -27,9 +28,12 @@ urlpatterns = [
     path('comment/<int:pk>/update/', CommentUpdateView.as_view(), name='comment-update'),
     path('comment/<int:pk>/delete/', CommentDeleteView.as_view(), name='comment-delete'),
 
-    # If you're still using the function-based detail + edit/delete views, they can be kept (optional)
-    path('posts/<int:pk>/', views.post_detail, name='post_detail'),  # if still used in template
-    path('comments/<int:pk>/edit/', views.comment_edit, name='comment_edit'),  # optional legacy
-    path('comments/<int:pk>/delete/', views.comment_delete, name='comment_delete'),  # optional legacy
+    # 
+    path('posts/<int:pk>/', views.post_detail, name='post_detail'),
+    path('comments/<int:pk>/edit/', views.comment_edit, name='comment_edit'),
+    path('comments/<int:pk>/delete/', views.comment_delete, name='comment_delete'),
+    path('search/', search_posts, name='search-posts'),
+    # Posts filtered by tag
+    path('tags/<str:tag_name>/', PostsByTagListView.as_view(), name='posts-by-tag'),
 ]
 

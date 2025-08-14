@@ -1,7 +1,6 @@
 {% load static %}
 <link rel="stylesheet" href="{% static 'blog/style.css' %}">
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,6 +12,10 @@
 <body>
     <header>
         <h1>My Django Blog</h1>
+        <form method="GET" action="{% url 'search' %}" style="margin-top: 10px;">
+            <input type="text" name="q" placeholder="Search posts..." required>
+            <button type="submit">Search</button>
+        </form>
     </header>
     <main>
         {% block content %}{% endblock %}

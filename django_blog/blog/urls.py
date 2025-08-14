@@ -1,13 +1,13 @@
 from django.urls import path
 from . import views
-from .views import search_posts, PostsByTagListView
-from django.contrib.auth import views as auth_views
 from .views import (
     PostListView, PostDetailView,
     PostCreateView, PostUpdateView, PostDeleteView,
     CommentCreateView, CommentUpdateView, CommentDeleteView,
+    search_posts, PostsByTagListView,
     home, register, profile
 )
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     # Home & Auth
@@ -28,12 +28,16 @@ urlpatterns = [
     path('comment/<int:pk>/update/', CommentUpdateView.as_view(), name='comment-update'),
     path('comment/<int:pk>/delete/', CommentDeleteView.as_view(), name='comment-delete'),
 
-    # 
+    # Comments (Function-based views)
     path('posts/<int:pk>/', views.post_detail, name='post_detail'),
     path('comments/<int:pk>/edit/', views.comment_edit, name='comment_edit'),
     path('comments/<int:pk>/delete/', views.comment_delete, name='comment_delete'),
+
+    # Search
     path('search/', search_posts, name='search-posts'),
+
     # Posts filtered by tag
-    path('tags/<str:tag_name>/', PostsByTagListView.as_view(), name='posts-by-tag'),
+    path('tags/<slug:tag_name>/', PostsByTagListView.as_view(), name='posts-by-tag'),
 ]
+
 

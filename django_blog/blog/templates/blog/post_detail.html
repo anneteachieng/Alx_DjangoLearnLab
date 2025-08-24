@@ -1,5 +1,6 @@
 {% extends "blog/base.html" %}
 {% block content %}
+
 <h2>{{ post.title }}</h2>
 <p>By {{ post.author }} on {{ post.published_date|date:"M d, Y" }}</p>
 <p>{{ post.content }}</p>
@@ -9,5 +10,39 @@
   <a href="{% url 'post-delete' post.pk %}">Delete</a>
 {% endif %}
 <a href="{% url 'home' %}">Back to all posts</a>
+
+<hr>
+
+<h2>Comments</h2>
+{% for comment in comments %}
+    <div style="border-bottom: 1px solid #ccc; margin-bottom: 10px;">
+        <p><strong>{{ comment.author }}</strong> said:</p>
+        <p>{{ comment.content }}</p>
+        <p><small>{{ comment.created_at|date:"M d, Y H:i" }}</small></p>
+
+        {% if user == comment.author %}
+            <p>
+                <a href="{% url 'comment_edit' comment.pk %}">Edit</a> |
+                <a href="{% url 'comment_delete' comment.pk %}">Delete</a>
+            </p>
+        {% endif %}
+    </div>
+{% empty %}
+    <p>No comments yet.</p>
+{% endfor %}
+
+<hr>
+
+<h3>Add a Comment</h3>
+{% if user.is_authenticated %}
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Post Comment</button>
+    </form>
+{% else %}
+    <p><a href="{% url 'login' %}">Log in</a> to post a comment.</p>
+{% endif %}
+
 {% endblock %}
 
